@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<head>
+    <title>TCAL Checker Tool</title>
+    <!-- <script src="plotly-2.30.0.min.js" charset="utf-8"></script> -->
+    <script src="https://cdn.plot.ly/plotly-2.30.0.min.js" charset="utf-8"></script>
+    <script src="TCAL-Checker-ErrorHandler.js" charset="utf-8"></script>
+    <script src="TCAL-Checker.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="TCAL-Checker.css">
+</head>
+<body>
+    <body2 style="flex:1">
+    <div class="controlBackground">
+        <details>
+            <summary>Click Here for more info</summary>
+            Here is the extra info you were looking for.
+        </details>
+        <button id="buttonSelectCOM">Click</button>
+        <p>Test File:</p>
+        <input type="file" id="test-file-selector">
+    </div>
+    <table id="dataTable"></table>
+    <div class="errorOutput" id="errorOutputHead" style="display:none;overflow-y: auto;">
+        <h3 style="text-align: center;">Error! Something went wrong.</h1>
+        <div class="errorOutput" id="errorOutputBody" style="width:100%"></div>
+    </div>
+    </body2>
+    <footer>
+        <p style="width: 50%; margin: auto; text-align:center; font-size:small;">
+            If something goes wrong, feel free to ping me @Ilyasnow in SlimeVR Discord server.</p>
+    </footer>
+</body>

@@ -1,0 +1,50 @@
+body {
+    min-height:100vh;
+    margin:0;
+    display:flex;
+    flex-direction:column;
+}
+
+footer {
+    margin-top:20px;
+}
+
+table { 
+    table-layout:fixed;
+    width:100%;
+    margin:0;
+}
+
+td { 
+    min-width:300px;
+    height:300px;
+    display:inline-block;
+}
+
+.plotterRow {
+    height:300px;
+    background-color: gainsboro;
+}
+
+.errorOutput {
+    overflow-y:scroll;
+    min-height:200px;
+    width:80%;
+    margin:auto;
+    border:solid;
+    border-color:red;
+    border-width:1.5px;
+}
+
+.controlBackground {
+    background-color: orange;
+    box-shadow: 1px 1px 2px #aa5000;
+}
+
+details > summary {
+    padding: 4px;
+    background-color: #ff8000;
+    border: none;
+    box-shadow: 1px 1px 2px #aa5000;
+    cursor: pointer;
+}
