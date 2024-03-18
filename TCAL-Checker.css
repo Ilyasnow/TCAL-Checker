@@ -24,6 +24,7 @@ td {
 .plotterRow {
     height:300px;
     background-color: gainsboro;
+    text-align: center;
 }
 
 .errorOutput {
