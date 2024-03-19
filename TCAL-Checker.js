@@ -153,3 +153,22 @@ function FileSelect(e) {
         }
       })();
 }
+
+function printRawData(textArray, tag) {
+    if(document.getElementById(tag)) document.getElementById(tag).remove();
+
+    const details = document.createElement("details");
+    details.className = "rawData";
+    details.id = tag;
+
+    const summary = document.createElement("summary");
+    summary.textContent = "Raw Data";
+    details.appendChild(summary);
+
+    const div = document.createElement("div");
+    div.className = "multiline";
+    div.textContent = textArray.join("\n");
+    details.appendChild(div);
+
+    document.getElementById("rawData").appendChild(details);
+}

@@ -10,6 +10,7 @@ function PrintDataWorker(textArray, TCALData) {
         ErrorWindow.DisplayError(err);
         ErrorWindow.DisplayError(textArray);
     }
+    printRawData(textArray, "printRaw");
 }
 
 function calDataFromPrintText(textArray, TCALData) {

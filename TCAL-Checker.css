@@ -39,6 +39,11 @@ td {
     position: relative;
 }
 
+#errorOutputBody {
+    width: 100%;
+    max-height: 300px;
+}
+
 .errorLineArray {
     margin:0;
 }
@@ -55,17 +60,35 @@ td {
     margin: 10px;
 }
 
-details {
+.controlBackground details {
     display: block;
     box-shadow: 0px 3px 5px #aa5000;
 }
 
-details > summary {
+.controlBackground details > summary {
     padding: 4px;
     background-color: #ff8000;
     border: none;
     box-shadow: 0px 3px 5px #aa5000;
     cursor: pointer;
+}
+
+.rawData{
+    background-color: black;
+    width: fit-content;
+    min-width: 100px;
+    box-shadow: 0px 3px 5px gray;
+    margin: 10px;
+}
+
+.rawData > summary{
+    padding: 3px;
+    background-color: darkgray;
+    box-shadow: 0px 3px 5px gray;
+}
+
+.rawData div {
+    color: white;
 }
 
 @keyframes loading {

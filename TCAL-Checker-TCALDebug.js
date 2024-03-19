@@ -10,6 +10,7 @@ function DebugDataWorker(textArray, TCALData) {
         ErrorWindow.DisplayError(err);
         ErrorWindow.DisplayError(textArray);
     }
+    printRawData(textArray, "debugRaw");
 }
 
 function calDataFromDebugText (textArray, TCALData) {
