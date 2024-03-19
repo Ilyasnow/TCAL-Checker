@@ -38,7 +38,9 @@ async function SelectCOMPort() {
     console.log(port);
 
     //TODO: Wait for boot to pass.
-    await new Promise(r => setTimeout(r, 1000));
+    //await new Promise(r => setTimeout(r, 1000));
+    console.log("waiting for clear serial");
+    await waitForClearSerial(port, 1000);
 
     console.log("sedning data");
     writer = port.writable.getWriter();
@@ -71,7 +73,21 @@ async function SelectCOMPort() {
 
     PrintDataWorker(printTextArray, TCALData)
     DebugDataWorker(debugTextArray, TCALData)
+}
 
+async function waitForClearSerial(port, timeout)
+{
+    var reader = port.readable.getReader();
+    while(true) {
+        const timeoutPromise = new Promise(((r, value, done) => setTimeout(r, timeout, '', true)));
+        const { value, done } = await Promise.race([reader.read(), timeoutPromise]);
+        //console.log(done);
+        if (done || done === undefined) {
+            console.log("clear");
+            reader.releaseLock();
+            break;
+        }
+    }
 }
 
 async function readSerialArray(port) {
@@ -80,7 +96,7 @@ async function readSerialArray(port) {
     var reader = port.readable.getReader();
     var decoder = new TextDecoder();
     while(true) {
-        const timeoutPromise = new Promise(((r, value, done) => setTimeout(r, 1000, '', true)));
+        const timeoutPromise = new Promise(((r, value, done) => setTimeout(r, 100, '', true)));
         const { value, done } = await Promise.race([reader.read(), timeoutPromise]);
         //console.log(done);
         if (done || done === undefined) {
@@ -93,10 +109,12 @@ async function readSerialArray(port) {
         if(outputLine.search(/(\n)/g) != -1)
         {
             var t = outputLine.split("\n");
-            //console.log(t[0]);
-            await textArray.push(t[0]);
-            t.shift();
-            outputLine = t.join();
+            //await console.log(t);
+            for(var i=0;i<t.length-1;i++)
+            {
+                textArray.push(t[i]);
+            }
+            outputLine = t[t.length-1];
         }
         
     }
