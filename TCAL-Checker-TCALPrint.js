@@ -24,7 +24,7 @@ function calDataFromPrintText(textArray, TCALData) {
     var currentArrayIndex = -1;
     for(var i=1; i < textArray.length;i++)
     {
-        if(currentIMUIndex != Number(/\[.+\] \[\S+:(\d+)]/g.exec(textArray[i])[1]))
+        if(textArray[i].search(/\[.+\] \[\S+:(\d+)]/g) != -1 && currentIMUIndex != Number(/\[.+\] \[\S+:(\d+)]/g.exec(textArray[i])[1]))
         {
             currentArrayIndex++;
             if(currentIMUIndex!==undefined)

@@ -80,7 +80,7 @@ async function readSerialArray(port) {
     var reader = port.readable.getReader();
     var decoder = new TextDecoder();
     while(true) {
-        const timeoutPromise = new Promise(((r, value, done) => setTimeout(r, 500, '', true)));
+        const timeoutPromise = new Promise(((r, value, done) => setTimeout(r, 1000, '', true)));
         const { value, done } = await Promise.race([reader.read(), timeoutPromise]);
         //console.log(done);
         if (done || done === undefined) {
