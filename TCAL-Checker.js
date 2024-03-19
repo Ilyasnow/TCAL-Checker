@@ -60,6 +60,7 @@ async function SelectCOMPort() {
     }
 
     //TODO: add a loading animation
+    document.getElementById("loadingBar").style.display = "block";
 
     console.log(port);
 
@@ -92,8 +93,11 @@ async function SelectCOMPort() {
     writer.releaseLock();
     await port.close();
 
+    document.getElementById("loadingBar").style.display = "none";
+
     PrintDataWorker(printTextArray, TCALData)
     DebugDataWorker(debugTextArray, TCALData)
+
 }
 
 async function readSerialArray(port)
@@ -365,7 +369,7 @@ function plotTCALData (TCALData) {
         {
             document.getElementById("plotterRow"+currentIndex).remove();
         }
-        if(currentIMU.TCALDataPoints == "") {
+        if(currentIMU.TCALDataPoints == "" || currentIMU.TCALDataPoints == undefined) {
             if(currentIMU.TCALSupported)
             {
                 var errmsg = currentIMU.IMUType+":"+currentIMU.IMUIndex+" - does not have TCAL data";

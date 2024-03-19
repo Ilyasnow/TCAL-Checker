@@ -56,3 +56,19 @@ details > summary {
     box-shadow: 1px 1px 2px #aa5000;
     cursor: pointer;
 }
+
+@keyframes loading {
+    from {left: 0;}
+    to {left: 20%;}
+}
+
+#loadingBar {
+    width: 50px;
+    height: 5px;
+    background-color: rgb(84, 221, 255);
+    position: relative;
+    animation: loading 0.5s;
+    animation-direction: alternate;
+    animation-iteration-count: infinite;
+    display: none;
+}
