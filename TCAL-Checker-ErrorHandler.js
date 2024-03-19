@@ -15,6 +15,7 @@
 
 //     document.getElementById("errorOutputHead").style.display = "block";
 //   }
+console.log("TCAL-Checker-ErrorHandler.js")
 
 class TCErrorHandler {
     ErrorText = "";

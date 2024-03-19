@@ -2,6 +2,8 @@
 console.log("Loaded TCAL-Checker.is")
 
 window.addEventListener("DOMContentLoaded", main);
+
+
 var ErrorWindow;
 function main(e){
     ErrorWindow = new TCErrorHandler();
@@ -19,7 +21,7 @@ function main(e){
 
     const bt = document.getElementById('buttonSelectCOM');
 
-    document.getElementById('test-file-selector').addEventListener('change', FileSelect);
+    document.getElementById('test-file-selector').addEventListener('input', FileSelect);
 }
 
 /*TCALData structure:
@@ -59,7 +61,6 @@ async function SelectCOMPort() {
         //ErrorWindow.DisplayError(err.message);
     }
 
-    //TODO: add a loading animation
     document.getElementById("loadingBar").style.display = "block";
 
     console.log(port);
@@ -100,8 +101,7 @@ async function SelectCOMPort() {
 
 }
 
-async function readSerialArray(port)
-{
+async function readSerialArray(port) {
     var outputLine = "";
     var textArray = [];
     var reader = port.readable.getReader();
@@ -111,7 +111,6 @@ async function readSerialArray(port)
         const { value, done } = await Promise.race([reader.read(), timeoutPromise]);
         //console.log(done);
         if (done || done === undefined) {
-            // Allow the serial port to be closed later.
             console.log("done");
             reader.releaseLock();
             break;
@@ -142,6 +141,10 @@ var testFileOutput;
 function FileSelect(e) {
     const file = document.getElementById('test-file-selector').files[0];
     (async () => {
+        if(!file) {
+            console.log("No file chosen");
+            return 1;
+        }
         const textOutput = await file.text();
         //console.log(textOutput);
         testFileOutput = textOutput;
@@ -150,7 +153,6 @@ function FileSelect(e) {
         var textArray = textOutput.split("\r\n");
 
         //clear output
-        //document.getElementById("dataTable").innerHTML = "";
         if(textArray[0] == 'tcal print')
         {
             PrintDataWorker(textArray, TCALData);
@@ -172,8 +174,7 @@ function DebugDataWorker(textArray, TCALData) {
     plotTCALData(TCALData);
 }
 
-function calDataFromPrintText(textArray, TCALData)
-{
+function calDataFromPrintText(textArray, TCALData) {
     console.log(textArray);
     var currentIMUIndex;
     var currentIMUType;
@@ -185,7 +186,6 @@ function calDataFromPrintText(textArray, TCALData)
     var currentArrayIndex = -1;
     for(var i=1; i < textArray.length;i++)
     {
-        console.log(textArray[i])
         if(currentIMUIndex != Number(/\[.+\] \[\S+:(\d+)]/g.exec(textArray[i])[1]))
         {
             currentArrayIndex++;
@@ -265,7 +265,6 @@ function calDataFromDebugText (textArray, TCALData) {
     var currentArrayIndex = -1;
     for(var i=1; i < textArray.length;i++)
     {
-        console.log(textArray[i]);
         if(textArray[i] == "")
         {
             break;
@@ -282,8 +281,6 @@ function calDataFromDebugText (textArray, TCALData) {
                 break;
             //pre-data `tcal debug` information
             case 1:
-                //[ERROR] [EmptySensor:1] Temperature calibration not supported for IMU Unknown
-                
                 if (textArray[i].startsWith("[INFO ] ["+currentIMUType+":"+currentIMUIndex+"] DATA "+currentIMUIndex)) {
                     flagDATA = 2;
                 }
@@ -388,7 +385,6 @@ function plotTCALData (TCALData) {
         {
             //if no datapoint (=0) then set values to `undefined` and approximate `tempC` from previous value +0.5
             if(datapoint.tempC == 0) {
-                console.log(pointsT.slice(-1));
                 pointsT.push(parseFloat(pointsT.slice(-1))+parseFloat(0.5));
                 pointsX.push(undefined);
                 pointsY.push(undefined);
@@ -425,9 +421,7 @@ function plotTCALData (TCALData) {
     // document.getElementById("dataTable").appendChild(rawDataButton);
 }
 
-function plotSingleGraph(axis, arrayX, arrayY, arrayYPoly, element)
-{
-    console.log([axis, arrayX, arrayY, arrayYPoly])
+function plotSingleGraph(axis, arrayX, arrayY, arrayYPoly, element) {
     layout = {
         title:"TCAL "+axis,
         xaxis:{
@@ -472,20 +466,18 @@ function plotSingleGraph(axis, arrayX, arrayY, arrayYPoly, element)
     Plotly.newPlot(plot, [trace1, trace2], layout, config);
 }
 
-function caclulatePolynomialArray(Tvalues, polynomialValues)
-{
+function caclulatePolynomialArray(Tvalues, polynomialValues) {
     var out = [];
     var C = polynomialValues["C"];
     var x = polynomialValues["x"];
     var xx = polynomialValues["xx"];
     var xxx = polynomialValues["xxx"];
-    console.log([C,x,xx,xxx]);
+    //console.log([C,x,xx,xxx]);
     Tvalues.forEach((point) => out.push(C + x*point + xx*point*point + xxx*point*point*point))
     return out;
 }
 
-function printTCALInfo(TCALData)
-{
+function printTCALInfo(TCALData) {
     if(!TCALData)
     {
         ErrorWindow.DisplayError("No TCAL data detected");
@@ -548,10 +540,4 @@ function printTCALInfo(TCALData)
             infoRow.appendChild(IMUDone);
         }
     });
-}
-
-function printSingleIMUData(SingleTCALData)
-{
-    printFields = ["IMUIndex","IMUType","TCALSupported","TCALTRange","TCALDone"];
-    
 }
