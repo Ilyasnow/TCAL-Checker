@@ -40,20 +40,26 @@ td {
 
 .controlBackground {
     background-color: orange;
-    box-shadow: 1px 1px 2px #aa5000;
+    box-shadow: 0px 3px 5px #aa5000;
     margin-bottom: 15px;
     padding: 10px;
 }
 
 .multiline {
     white-space: pre-wrap;
+    margin: 10px;
+}
+
+details {
+    display: block;
+    box-shadow: 0px 3px 5px #aa5000;
 }
 
 details > summary {
     padding: 4px;
     background-color: #ff8000;
     border: none;
-    box-shadow: 1px 1px 2px #aa5000;
+    box-shadow: 0px 3px 5px #aa5000;
     cursor: pointer;
 }
 
@@ -71,4 +77,24 @@ details > summary {
     animation-direction: alternate;
     animation-iteration-count: infinite;
     display: none;
+}
+
+.detailsInner {
+    margin: 10px;
+    display: inline;
+    width: -webkit-fill-available;
+    width: -moz-available;
+}
+
+.imgClick {
+    display:none;
+}
+
+.imgClick:checked + label > img {
+    width:100%;
+}
+
+img {
+    width:33%;
+    cursor: pointer;
 }

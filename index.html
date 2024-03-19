@@ -12,10 +12,43 @@
     <div class="controlBackground">
         <details>
             <summary>What is this?</summary>
-            <div class="controlBackground multiline">This tool allows you to quickly examine your TCAL values and calculated TCALv2 curves for accuracy.
-It gathers data direcltly from your tracker via COM port.
-Simply connect your tracker to your PC with USB cable and select the correct port with the button below.
+            <div class="multiline" style="box-shadow:none">A SlimeVR tool to quickly examine your TCAL values and calculated TCAL curves for accuracy.
+Simply connect your tracker to your PC with a USB cable and select the correct port with the button below.
+Be sure to not have any other serial console open (SlimeVR Serial Console, VSCode PlatformIO Serial Monitor, etc).
 It may take a few seconds for results to appear.</div>
+            <details class="detailsInner">
+                <summary>What is TCAL?</summary>
+                <div class="multiline">Temperature calibration (TCAL) is a process of mapping drift values of your trackers to its working temperatures available for BMI series of IMUs.
+Depending on the temperature, reported IMU values will be offset by some amount, which will add up to the normal drift all IMUs experience therefore increasing total drift.
+TCAL allows firmware to know that offset at various temperatures and remove it from the total output, eliminating the added drift from the temperature.</div>
+            </details>
+            <details class="detailsInner">
+                <summary>How do I read the results?</summary>
+                <div class="multiline">After you've selected the COM port and tool has read the data from your tracker you should be able to see the TCAL data for all configured IMUs.
+IMU Index - index of the current IMU;
+IMU Type - reported type of the current IMU;
+TCAL Supported by IMU - whether or not current IMU supports TCAL;
+TCAL Temperature Range (Expected) - configured temperature range for IMU where data is gathered. You begin TCAL by reading lower value and save TCAL data by reaching the upper value;
+TCAL Done - how much of configured temperature range is actually covered by gathered data;
+And under that you should see the graphs for X, Y, Z offsets in regards to temperature.</div>
+            </details>
+            <details class="detailsInner">
+                <summary>What do these graphs mean?</summary>
+                <div class="multiline">TCAL works by gathering offset data at various temperature points and then constructing a polynomial to interpolate offset at much higher accuracy.
+If your gathered data covers the entire temperature range then you should see orange curves being roughly in the middle between blue points, following the expected trend line.
+However, if there are gaps in gathered data then the curve will try to approximate how much offset the IMU will experience at uncaptured temperatures.
+Depending on how few data points there are, the curve may massively diverge from the real offsets, therefore actually increasing expected drift at those temperatures.
+With that, you should examine these graphs and see if the calculated curves (orange line) is more or less where it's expected to be based on gathered data (blue dots).
+It's more important to have data be accurate at around your operating temperatures, since that is the data you will actually be using in your applications.</div>
+                <div>
+                    <input type="checkbox" id="GoodCurveCheck" class="imgClick"/>
+                    <label for="GoodCurveCheck"><img src="Assets/GoodCurve.png"></label>
+                    <input type="checkbox" id="OkayCurveCheck" class="imgClick"/>
+                    <label for="OkayCurveCheck"><img src="Assets/OkayCurve.png"></label>
+                    <input type="checkbox" id="BadCurveCheck" class="imgClick"/>
+                    <label for="BadCurveCheck"><img src="Assets/BadCurve.png"></label>
+                </div>
+            </details>
         </details>
         <p>
         Get TCAL Data from Serial:
@@ -34,6 +67,6 @@ It may take a few seconds for results to appear.</div>
     <footer>
         <p style="width: 50%; margin: auto; text-align:center; font-size:small;">
             <a href="https://github.com/Ilyasnow/TCAL-Checker">Github</a>
-            If something goes wrong, feel free to ping me @Ilyasnow in SlimeVR Discord server.</p>
+            If something goes wrong, feel free to ping me @Ilyasnow in the SlimeVR Discord server.</p>
     </footer>
 </body>
