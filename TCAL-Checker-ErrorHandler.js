@@ -25,11 +25,22 @@ class TCErrorHandler {
         {
             this.ErrorText = errortext;
             this.ErrorData = data ? data.message : null;
-            var error = document.createElement("p");
-            error.textContent = this.ErrorText
-            document.getElementById("errorOutputBody").appendChild(error);
+            console.log(this.ErrorText);
+            if(Array.isArray(this.ErrorText))
+            {
+                this.ErrorText.forEach(element => {
+                    const error = document.createElement("p");
+                    error.textContent = element;
+                    error.className = "errorLineArray";
+                    document.getElementById("errorOutputBody").appendChild(error);
+                })
+            } else {
+                const error = document.createElement("p");
+                error.textContent = this.ErrorText;
+                document.getElementById("errorOutputBody").appendChild(error);
+            }
 
-            if(this.ErrorText|| this.ErrorData) this.ShowErrorWindow();
+            if(this.ErrorText || this.ErrorData) this.ShowErrorWindow();
         }
     }
 

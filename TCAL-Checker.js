@@ -8,20 +8,15 @@ var ErrorWindow;
 function main(e){
     ErrorWindow = new TCErrorHandler();
     if (!("serial" in navigator)) {
-        console.log("Serial API is unsupported by your browser");
         ErrorWindow.DisplayError("Serial API is unsupported by your browser");
-        document.getElementById('buttonSelectCOM').style.display = "none";
+        document.getElementById('buttonSelectCOM').textContent = "Unsupported"
     }
     else {
-        const bt = document.getElementById('buttonSelectCOM');
-        if (bt) {
-            bt.addEventListener('click', SelectCOMPort)
-        } else {console.log("bt is null")}
+        document.getElementById('buttonSelectCOM').addEventListener('click', SelectCOMPort);
     }
 
-    const bt = document.getElementById('buttonSelectCOM');
-
     document.getElementById('test-file-selector').addEventListener('input', FileSelect);
+    document.getElementById('closeErrorOutput').addEventListener('click', ErrorWindow.HideErrorWindow);
 }
 
 /*TCALData structure:
@@ -165,13 +160,25 @@ function FileSelect(e) {
 }
 
 function PrintDataWorker(textArray, TCALData) {
-    calDataFromPrintText(textArray, TCALData);
-    printTCALInfo(TCALData);
+    try {
+        calDataFromPrintText(textArray, TCALData);
+        printTCALInfo(TCALData);
+    } catch (err)
+    {
+        ErrorWindow.DisplayError(err);
+        ErrorWindow.DisplayError(textArray);
+    }
 }
 
 function DebugDataWorker(textArray, TCALData) {
-    calDataFromDebugText(textArray, TCALData);
-    plotTCALData(TCALData);
+    try {
+        calDataFromDebugText(textArray, TCALData);
+        plotTCALData(TCALData);
+    } catch (err)
+    {
+        ErrorWindow.DisplayError(err);
+        ErrorWindow.DisplayError(textArray);
+    }
 }
 
 function calDataFromPrintText(textArray, TCALData) {
@@ -355,7 +362,6 @@ function plotTCALData (TCALData) {
     if(!TCALData)
     {
         ErrorWindow.DisplayError("No TCAL data detected");
-        console.log("No TCAL data detected");
         return 1;
     }
     var currentIndex = -1;
@@ -371,7 +377,6 @@ function plotTCALData (TCALData) {
             {
                 var errmsg = currentIMU.IMUType+":"+currentIMU.IMUIndex+" - does not have TCAL data";
                 ErrorWindow.DisplayError(errmsg);
-                console.log(errmsg);
             }
             return 1;
         }
@@ -481,7 +486,6 @@ function printTCALInfo(TCALData) {
     if(!TCALData)
     {
         ErrorWindow.DisplayError("No TCAL data detected");
-        console.log("No TCAL data detected");
         return 1;
     }
 

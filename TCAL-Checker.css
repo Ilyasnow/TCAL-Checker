@@ -1,41 +1,46 @@
 body {
-    min-height:100vh;
-    margin:0;
-    display:flex;
-    flex-direction:column;
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 footer {
-    margin-top:20px;
+    margin-top: 20px;
 }
 
 table { 
-    table-layout:fixed;
-    width:100%;
-    margin:0;
+    table-layout: fixed;
+    width: 100%;
+    margin: 0;
 }
 
 td { 
-    min-width:300px;
-    height:300px;
-    display:inline-block;
+    min-width: 300px;
+    height: 300px;
+    display: inline-block;
 }
 
 .plotterRow {
-    height:300px;
+    height: 300px;
     background-color: gainsboro;
     text-align: center;
 }
 
 .errorOutput {
-    overflow-y:scroll;
+    overflow-y: scroll;
     overflow-x: clip;
-    min-height:200px;
-    width:80%;
-    margin:auto;
-    border:solid;
-    border-color:red;
-    border-width:1.5px;
+    min-height: 200px;
+    width: 80%;
+    margin: auto;
+    border: solid;
+    border-color: red;
+    border-width: 1.5px;
+    position: relative;
+}
+
+.errorLineArray {
+    margin:0;
 }
 
 .controlBackground {
@@ -87,11 +92,11 @@ details > summary {
 }
 
 .imgClick {
-    display:none;
+    display: none;
 }
 
 .imgClick:checked + label > img {
-    width:100%;
+    width: 100%;
 }
 
 img {
