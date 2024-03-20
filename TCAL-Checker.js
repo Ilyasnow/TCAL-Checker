@@ -1,4 +1,4 @@
-console.log("Loaded TCAL-Checker.is")
+console.log("TCAL-Checker.is loaded")
 
 window.addEventListener("DOMContentLoaded", main);
 
@@ -10,14 +10,14 @@ function main(e){
         document.getElementById('buttonSelectCOM').textContent = "Unsupported"
         //Browser is firefox?
         if(typeof InstallTrigger !== 'undefined')
-            ErrorWindow.DisplayError("Sadly, Firefox does not support Web Serial API. You can try Chrome, Edge or Opera instead.");
+            ErrorWindow.DisplayError("Sadly, Firefox does not support Web Serial API. You can try Chrome, Edge or Opera instead");
     }
     else {
         document.getElementById('buttonSelectCOM').addEventListener('click', SelectCOMPort);
     }
 
     document.getElementById('test-file-selector').addEventListener('input', FileSelect);
-    document.getElementById('closeErrorOutput').addEventListener('click', ErrorWindow.HideErrorWindow);
+    document.getElementById('closeErrorOutput').addEventListener('click', () => (ErrorWindow.ClearErrors()));
 }
 
 async function SelectCOMPort() {
@@ -31,7 +31,7 @@ async function SelectCOMPort() {
     }
     catch (err)
     {
-        console.log(err.message);
+        ErrorWindow.DisplayError(err);
         return 1;
         //ErrorWindow.DisplayError(err.message);
     }
@@ -181,6 +181,10 @@ function ParseInputFile (textArray) {
         PrintDataWorker(textArrayPrint, TCALData);
     if(textArrayDebug)
         DebugDataWorker(textArrayDebug, TCALData);
+    if(!textArrayPrint && !textArrayDebug) {
+        ErrorWindow.DisplayError("No TCAL data detected");
+        ErrorWindow.DisplayError(textArray);
+    }
 }
 
 function FileSelect(e) {

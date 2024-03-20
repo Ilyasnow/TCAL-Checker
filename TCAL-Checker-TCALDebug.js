@@ -123,12 +123,12 @@ function plotTCALData (TCALData) {
         {
             document.getElementById("plotterRow"+currentIndex).remove();
         }
-        if(currentIMU.TCALDataPoints == "" || currentIMU.TCALDataPoints == undefined) {
-            if(currentIMU.TCALSupported)
-            {
-                var errmsg = currentIMU.IMUType+":"+currentIMU.IMUIndex+" - does not have TCAL data";
-                ErrorWindow.DisplayError(errmsg);
-            }
+        if(currentIMU.TCALSupported == false) {
+            return 1;
+        }
+        if(currentIMU.TCALDataPoints === undefined || currentIMU.TCALDataPoints.length == 0 ) {
+            var errmsg = currentIMU.IMUType+":"+currentIMU.IMUIndex+" - does not have TCALv1 data";
+            ErrorWindow.DisplayError(errmsg);
             return 1;
         }
         var plotterData = [];
@@ -152,6 +152,12 @@ function plotTCALData (TCALData) {
                 pointsZ.push(datapoint.z);
             }
         });
+
+        if(currentIMU.TCALPolynomials === undefined || currentIMU.TCALPolynomials.length == 0 ) {
+            var errmsg = currentIMU.IMUType+":"+currentIMU.IMUIndex+" - does not have TCALv2 data";
+            ErrorWindow.DisplayError(errmsg);
+            return 1;
+        }
         var pointsXPoly = caclulatePolynomialArray(pointsT, currentIMU.TCALPolynomials[0]);
         var pointsYPoly = caclulatePolynomialArray(pointsT, currentIMU.TCALPolynomials[1]);
         var pointsZPoly = caclulatePolynomialArray(pointsT, currentIMU.TCALPolynomials[2]);

@@ -4,7 +4,7 @@ console.log("TCAL-Checker-ErrorHandler.js loaded")
 class TCErrorHandler {
     ErrorText = "";
     ErrorData;
-    DisplayError (errortext, data) {
+    DisplayError(errortext, data) {
         if(errortext || data)
         {
             this.ErrorText = errortext;
@@ -28,17 +28,18 @@ class TCErrorHandler {
         }
     }
 
-    ShowErrorWindow () {
+    ShowErrorWindow() {
         document.getElementById("errorOutputHead").style.display = "block";
     }
 
-    HideErrorWindow () {
+    HideErrorWindow() {
         document.getElementById("errorOutputHead").style.display = "none";
     }
 
     ClearErrors() {
-        ErrorText = "";
-        ErrorData = undefined;
+        this.ErrorText = "";
+        this.ErrorData = undefined;
         document.getElementById("errorOutputBody").innerHTML = "";
+        this.HideErrorWindow();
     }
 }
