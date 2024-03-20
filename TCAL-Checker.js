@@ -8,6 +8,9 @@ function main(e){
     if (!("serial" in navigator)) {
         ErrorWindow.DisplayError("Serial API is unsupported by your browser");
         document.getElementById('buttonSelectCOM').textContent = "Unsupported"
+        //Browser is firefox?
+        if(typeof InstallTrigger !== 'undefined')
+            ErrorWindow.DisplayError("Sadly, Firefox does not support Web Serial API. You can try Chrome, Edge or Opera instead.");
     }
     else {
         document.getElementById('buttonSelectCOM').addEventListener('click', SelectCOMPort);
@@ -123,9 +126,61 @@ async function readSerialArray(port) {
 }
 
 function ClearSerialOutput(textArray) {
-    return textArray.filter((line) => {
-        return line.search(/\[.*\] (\[SerialCommands\])/g) == -1;
+    //remove leading and trailing whitespaces
+    textArray = textArray.map((line) => {
+        return line.trim();
     })
+    //remove lines not including [sometext] or commands
+    textArray = textArray.filter((line) => {
+        return (line.search(/\[.+\]/g) != -1 || line.search(/tcal print/gi) != -1 || line.search(/tcal debug/gi) != -1 );
+    })
+    //remove periodic [SerialCommands] output
+    textArray = textArray.filter((line) => {
+        return (line.search(/\[.*\] (\[SerialCommands\])/g) == -1 && line.search(/\[NOTICE\]/g) == -1 );
+    })
+    return textArray;
+}
+
+function ParseInputFile (textArray) {
+    textArray = ClearSerialOutput(textArray);
+
+    var printIndex;
+    var debugIndex;
+    var textArrayPrint;
+    var textArrayDebug;
+    var TCALData = [];
+    console.log("textArray");
+    console.log(textArray);
+    for(var i=0; i<textArray.length; i++)
+    {
+        if(textArray[i] == "tcal print")
+        {
+            printIndex = i;
+            continue;
+        }
+        if(textArray[i] == "tcal debug")
+        {
+            debugIndex = i;
+            continue;
+        }
+    }
+
+    if(printIndex != undefined && debugIndex != undefined ) {
+        textArrayPrint = printIndex < debugIndex ? textArray.slice(printIndex,debugIndex) : textArray.slice(printIndex);
+        textArrayDebug = debugIndex < printIndex ? textArray.slice(debugIndex,printIndex) : textArray.slice(debugIndex);
+    } else if (printIndex != undefined ) {
+        textArrayPrint = textArray.slice(printIndex);
+    } else if (debugIndex != undefined ) {
+        textArrayDebug = textArray.slice(debugIndex);
+    }
+
+    console.log(textArrayPrint);
+    console.log(textArrayDebug);
+
+    if(textArrayPrint)
+        PrintDataWorker(textArrayPrint, TCALData);
+    if(textArrayDebug)
+        DebugDataWorker(textArrayDebug, TCALData);
 }
 
 function FileSelect(e) {
@@ -138,19 +193,10 @@ function FileSelect(e) {
         const textOutput = await file.text();
         //console.log(textOutput);
         testFileOutput = textOutput;
-        var TCALData = [];
 
         var textArray = textOutput.split("\r\n");
 
-        //clear output
-        if(textArray[0] == 'tcal print')
-        {
-            PrintDataWorker(textArray, TCALData);
-        }
-        if(textArray[0] == 'tcal debug')
-        {
-            DebugDataWorker(textArray, TCALData);
-        }
+        ParseInputFile(textArray);
       })();
 }
 
