@@ -109,7 +109,7 @@ async function readSerialArray(port) {
         const { value, done } = await Promise.race([reader.read(), timeoutPromise]);
         //console.log(done);
         if (done || done === undefined) {
-            if(outputLine) textArray.push(toutputLine);
+            if(outputLine) textArray.push(outputLine);
             console.log("done");
             reader.releaseLock();
             break;
