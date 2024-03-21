@@ -105,7 +105,7 @@ async function readSerialArray(port) {
     var reader = port.readable.getReader();
     var decoder = new TextDecoder();
     while(true) {
-        const timeoutPromise = new Promise(((r, value, done) => setTimeout(r, 100, '', true)));
+        const timeoutPromise = new Promise(((r, value, done) => setTimeout(r, 300, '', true)));
         const { value, done } = await Promise.race([reader.read(), timeoutPromise]);
         //console.log(done);
         if (done || done === undefined) {
@@ -137,17 +137,20 @@ function ClearSerialOutput(textArray) {
         return line.trim();
     })
     //remove lines not including [sometext] or commands
+    //keep only [text] [IMU:INDEX] formatted lines
     textArray = textArray.filter((line) => {
-        return (line.search(/\[.+\]/g) != -1 || line.search(/tcal print/gi) != -1 || line.search(/tcal debug/gi) != -1 );
+        return (line.search(/\[.+\] ?\[.+:\d+\]/g) != -1 || 
+        line.search(/tcal print/gi) != -1 || 
+        line.search(/tcal debug/gi) != -1);
     })
-    //remove [WiFiHandler] output
-    textArray = textArray.filter((line) => {
-        return (line.search(/\[WiFiHandler\]/g) == -1 && line.search(/\[WiFiProvisioning\]/g) == -1 );
-    })
-    //remove periodic [SerialCommands] output
-    textArray = textArray.filter((line) => {
-        return (line.search(/\[SerialCommands\]/g) == -1 && line.search(/\[NOTICE\]/g) == -1 );
-    })
+    // //remove [WiFiHandler] output
+    // textArray = textArray.filter((line) => {
+    //     return (line.search(/\[WiFiHandler\]/g) == -1 && line.search(/\[WiFiProvisioning\]/g) == -1  && line.search(/\[UDPConnection\]/g) == -1);
+    // })
+    // //remove periodic [SerialCommands] output
+    // textArray = textArray.filter((line) => {
+    //     return (line.search(/\[SerialCommands\]/g) == -1 && line.search(/\[NOTICE\]/g) == -1 );
+    // })
     return textArray;
 }
 
