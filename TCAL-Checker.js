@@ -140,9 +140,13 @@ function ClearSerialOutput(textArray) {
     textArray = textArray.filter((line) => {
         return (line.search(/\[.+\]/g) != -1 || line.search(/tcal print/gi) != -1 || line.search(/tcal debug/gi) != -1 );
     })
+    //remove [WiFiHandler] output
+    textArray = textArray.filter((line) => {
+        return (line.search(/\[WiFiHandler\]/g) == -1 && line.search(/\[WiFiProvisioning\]/g) == -1 );
+    })
     //remove periodic [SerialCommands] output
     textArray = textArray.filter((line) => {
-        return (line.search(/\[.*\] (\[SerialCommands\])/g) == -1 && line.search(/\[NOTICE\]/g) == -1 );
+        return (line.search(/\[SerialCommands\]/g) == -1 && line.search(/\[NOTICE\]/g) == -1 );
     })
     return textArray;
 }
