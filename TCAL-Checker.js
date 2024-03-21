@@ -36,14 +36,20 @@ async function SelectCOMPort() {
         //ErrorWindow.DisplayError(err.message);
     }
 
+    if(port === undefined) {
+        ErrorWindow.DisplayError("Failed to open the Serial port, please try again.");
+        return 1;
+    }
+
     document.getElementById("loadingBar").style.display = "block";
 
     console.log(port);
 
     //TODO: Wait for boot to pass.
     //await new Promise(r => setTimeout(r, 1000));
+    //<1000 cause 8266 sends . every second when it cannot connect to wifi
     console.log("waiting for clear serial");
-    await waitForClearSerial(port, 1000);
+    await waitForClearSerial(port, 700);
 
     console.log("sedning data");
     writer = port.writable.getWriter();
