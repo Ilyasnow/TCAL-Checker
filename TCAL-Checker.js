@@ -31,6 +31,7 @@ async function SelectCOMPort() {
     }
     catch (err)
     {
+        if(err.name == "NotFoundError") return 1;
         ErrorWindow.DisplayError(err);
         return 1;
         //ErrorWindow.DisplayError(err.message);
@@ -226,6 +227,7 @@ function printRawData(textArray, tag) {
 
     const summary = document.createElement("summary");
     summary.textContent = "Raw Data";
+    summary.style.cursor = "pointer";
     details.appendChild(summary);
 
     const div = document.createElement("div");
