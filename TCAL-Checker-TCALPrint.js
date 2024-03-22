@@ -3,7 +3,9 @@ console.log("TCAL-Checker-TCALPrint.js loaded")
 
 function PrintDataWorker(textArray, TCALData) {
     try {
+        ErrorWindow.DisplayLoading("Formatting basic data");
         calDataFromPrintText(textArray, TCALData);
+        ErrorWindow.DisplayLoading("Displaying basic data");
         printTCALInfo(TCALData);
     } catch (err)
     {
@@ -11,6 +13,7 @@ function PrintDataWorker(textArray, TCALData) {
         ErrorWindow.DisplayError(textArray);
     }
     printRawData(textArray, "printRaw");
+    ErrorWindow.HideLoading();
 }
 
 function calDataFromPrintText(textArray, TCALData) {

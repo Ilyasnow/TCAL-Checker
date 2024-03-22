@@ -3,7 +3,9 @@ console.log("TCAL-Checker-TCALDebug.js loaded")
 
 function DebugDataWorker(textArray, TCALData) {
     try {
+        ErrorWindow.DisplayLoading("Formatting graph data");
         calDataFromDebugText(textArray, TCALData);
+        ErrorWindow.DisplayLoading("Displaying graph data");
         plotTCALData(TCALData);
     } catch (err)
     {
@@ -11,6 +13,7 @@ function DebugDataWorker(textArray, TCALData) {
         ErrorWindow.DisplayError(textArray);
     }
     printRawData(textArray, "debugRaw");
+    ErrorWindow.HideLoading();
 }
 
 function calDataFromDebugText (textArray, TCALData) {

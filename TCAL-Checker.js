@@ -42,7 +42,8 @@ async function SelectCOMPort() {
         return 1;
     }
 
-    document.getElementById("loadingBar").style.display = "block";
+    //document.getElementById("loadingBar").style.display = "block";
+    ErrorWindow.DisplayLoading("Waiting for port...")
 
     console.log(port);
 
@@ -51,6 +52,8 @@ async function SelectCOMPort() {
     //<1000 cause 8266 sends . every second when it cannot connect to wifi
     console.log("waiting for clear serial");
     await waitForClearSerial(port, 700);
+    
+    ErrorWindow.DisplayLoading("Serial ready, gathering data...")
 
     console.log("sedning data");
     writer = port.writable.getWriter();
@@ -70,6 +73,7 @@ async function SelectCOMPort() {
     readTextArray = await readSerialArray(port);
     debugTextArray = debugTextArray.concat(readTextArray);
 
+    ErrorWindow.DisplayLoading("Data gathering complete!")
     console.log("finished");
     console.log(printTextArray);
     console.log(debugTextArray);
@@ -79,6 +83,7 @@ async function SelectCOMPort() {
     writer.releaseLock();
     await port.close();
 
+    ErrorWindow.HideLoading();
     document.getElementById("loadingBar").style.display = "none";
 
     PrintDataWorker(printTextArray, TCALData)
@@ -87,6 +92,7 @@ async function SelectCOMPort() {
 
 async function waitForClearSerial(port, timeout)
 {
+    ErrorWindow.DisplayLoading("Waiting for Serial to clear up...");
     var reader = port.readable.getReader();
     while(true) {
         const timeoutPromise = new Promise(((r, value, done) => setTimeout(r, timeout, '', true)));

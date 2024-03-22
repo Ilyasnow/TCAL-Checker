@@ -42,4 +42,19 @@ class TCErrorHandler {
         document.getElementById("errorOutputBody").innerHTML = "";
         this.HideErrorWindow();
     }
+
+    LoadingStatus = document.getElementById("loadingStatus");
+    LoadingBar = document.getElementById("loadingBar");
+    DisplayLoading(loadingText) {
+        console.log(loadingText);
+        this.LoadingStatus.textContent = loadingText;
+        this.LoadingBar.style.display = "block";
+        this.LoadingStatus.style.display = "block";
+    }
+
+    HideLoading() {
+        this.LoadingStatus.textContent = '';
+        this.LoadingStatus.style.display = "none";
+        this.LoadingBar.style.display = "none";
+    }
 }
