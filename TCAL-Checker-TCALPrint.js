@@ -100,7 +100,7 @@ function calDataFromPrintText(textArray, TCALData) {
 function printTCALInfo(TCALData) {
     if(!TCALData)
     {
-        ErrorWindow.DisplayError("No TCAL data detected");
+        ErrorWindow.DisplayError("printTCALInfo: No TCAL data detected");
         return 1;
     }
 

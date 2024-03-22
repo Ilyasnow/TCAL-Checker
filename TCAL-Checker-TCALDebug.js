@@ -115,7 +115,7 @@ function calDataFromDebugText (textArray, TCALData) {
 function plotTCALData (TCALData) {
     if(!TCALData)
     {
-        ErrorWindow.DisplayError("No TCAL data detected");
+        ErrorWindow.DisplayError("plotTCALData: No TCAL data detected");
         return 1;
     }
     var currentIndex = -1;
@@ -140,6 +140,8 @@ function plotTCALData (TCALData) {
         var pointsY = [];
         var pointsZ = [];
         
+        var pointsError = [];
+        
         currentIMU.TCALDataPoints.forEach((datapoint) =>
         {
             //if no datapoint (=0) then set values to `undefined` and approximate `tempC` from previous value +0.5
@@ -148,11 +150,13 @@ function plotTCALData (TCALData) {
                 pointsX.push(undefined);
                 pointsY.push(undefined);
                 pointsZ.push(undefined);
+                pointsError.push(parseFloat(pointsT.slice(-1)));
             } else {
                 pointsT.push(datapoint.tempC);
                 pointsX.push(datapoint.x);
                 pointsY.push(datapoint.y);
                 pointsZ.push(datapoint.z);
+                pointsError.push(undefined);
             }
         });
 
@@ -176,19 +180,18 @@ function plotTCALData (TCALData) {
             document.getElementById("dataTable").appendChild(plotRow);
         }
         
-        plotSingleGraph("X", pointsT, pointsX, pointsXPoly, plotRow);
-        plotSingleGraph("Y", pointsT, pointsY, pointsYPoly, plotRow);
-        plotSingleGraph("Z", pointsT, pointsZ, pointsZPoly, plotRow);        
+        plotSingleGraph("X", pointsT, pointsX, pointsXPoly, plotRow, pointsError);
+        plotSingleGraph("Y", pointsT, pointsY, pointsYPoly, plotRow, pointsError);
+        plotSingleGraph("Z", pointsT, pointsZ, pointsZPoly, plotRow, pointsError);        
     });
-
-    // TODO: Display raw data
-    // var rawDataButton = document.createElement("details");
-    // document.getElementById("dataTable").appendChild(rawDataButton);
 }
 
-function plotSingleGraph(axis, arrayX, arrayY, arrayYPoly, element) {
+function plotSingleGraph(axis, arrayX, arrayY, arrayYPoly, element, arrayError) {
     layout = {
-        title:"TCAL "+axis,
+        title:{
+            text: "TCAL "+axis,
+            y: 0.93,
+        },
         xaxis:{
             title: "Temperature",
             range: [Math.round(Math.min(...arrayX))-1, Math.round(Math.max(...arrayX))+2]
@@ -199,19 +202,39 @@ function plotSingleGraph(axis, arrayX, arrayY, arrayYPoly, element) {
         showlegend: true,
         legend:{
             "orientation":"h",
-            y:20
+            y:1.5
         },
+        //default t r b l
+        //100 80 80 80
         margin:{
             r:2,
             l:50
         },
     }
+    
+    var traceError = {
+        mode: 'markers',
+        x: arrayError,
+        y: arrayYPoly,
+        text: arrayError,
+        marker: {
+            color: 'rgba(255,0,0,0.8)'
+        },
+        name:'Missing data',
+        //showlegend: false,
+        // error_y: {
+        //     type: 'constant',
+        //     value: 1,
+        // },
+    }
+    //blue: rgb(31, 119, 180);
     var trace1 = {
         mode: 'markers',
         x:arrayX,
         y:arrayY,
         name:'TCALv1 gathered data'
     }
+    //orange: rgb(255, 127, 14);
     var trace2 = {
         mode: 'lines',
         x:arrayX,
@@ -228,7 +251,7 @@ function plotSingleGraph(axis, arrayX, arrayY, arrayYPoly, element) {
     var plot = document.createElement("td");
     plot.style.width = "33%";
     element.appendChild(plot);
-    Plotly.newPlot(plot, [trace1, trace2], layout, config);
+    Plotly.newPlot(plot, [trace1, trace2, traceError], layout, config);
 }
 
 function caclulatePolynomialArray(Tvalues, polynomialValues) {

@@ -202,7 +202,7 @@ function ParseInputFile (textArray) {
     if(textArrayDebug)
         DebugDataWorker(textArrayDebug, TCALData);
     if(!textArrayPrint && !textArrayDebug) {
-        ErrorWindow.DisplayError("No TCAL data detected");
+        ErrorWindow.DisplayError("ParseInputFile: No TCAL data detected");
         ErrorWindow.DisplayError(textArray);
     }
 }
