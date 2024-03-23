@@ -23,12 +23,17 @@ function calDataFromDebugText (textArray, TCALData) {
     var currentIMUType;
     var currentTCALDataPoints;
     var currentTCALPolynomials;
+    var currentTCALSupported;
     var currentArrayIndex = -1;
     for(var i=1; i < textArray.length;i++)
     {
         if(textArray[i] == "")
         {
             break;
+        }
+        if (textArray[i].search(/(Temperature calibration not supported for )/g) != -1)
+        {
+            currentTCALSupported = false;
         }
         switch(flagDATA)
         {
@@ -100,12 +105,14 @@ function calDataFromDebugText (textArray, TCALData) {
             IMUType:currentIMUType,
             TCALDataPoints:currentTCALDataPoints,
             TCALPolynomials:currentTCALPolynomials,
+            TCALSupported:currentTCALSupported,
         });
     }
     else
     {
         TCALData[currentIMUIndex].TCALDataPoints = currentTCALDataPoints;
         TCALData[currentIMUIndex].TCALPolynomials = currentTCALPolynomials;
+        TCALData[currentIMUIndex].tcalSupported = currentTCALSupported;
     }
     console.log(TCALData);
     TCALDataGlobal = TCALData
@@ -129,7 +136,7 @@ function plotTCALData (TCALData) {
         if(currentIMU.TCALSupported == false) {
             return 1;
         }
-        if(currentIMU.TCALDataPoints === undefined || currentIMU.TCALDataPoints.length == 0 ) {
+        if(currentIMU.TCALDataPoints == undefined || currentIMU.TCALDataPoints.length == 0 ) {
             var errmsg = currentIMU.IMUType+":"+currentIMU.IMUIndex+" - does not have TCALv1 data";
             ErrorWindow.DisplayError(errmsg);
             return 1;

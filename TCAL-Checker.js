@@ -111,9 +111,18 @@ async function readSerialArray(port) {
     var textArray = [];
     var reader = port.readable.getReader();
     var decoder = new TextDecoder();
+    var firstLine = true;
     while(true) {
-        const timeoutPromise = new Promise(((r, value, done) => setTimeout(r, 300, '', true)));
-        const { value, done } = await Promise.race([reader.read(), timeoutPromise]);
+        //wait indefinitely for the first line of data, otherwise setTimeout ms
+        console.log(firstLine);
+        if(firstLine) {
+            var { value, done } = await reader.read();
+        } else {
+            const timeoutPromise = new Promise(((r, value, done) => setTimeout(r, 300, '', true)));
+            var { value, done } = await Promise.race([reader.read(), timeoutPromise]);
+        }
+        firstLine = false;
+
         //console.log(done);
         if (done || done === undefined) {
             if(outputLine) textArray.push(outputLine);
