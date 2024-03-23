@@ -52,12 +52,37 @@ It's more important to have data be accurate at around your operating temperatur
                     <label for="BadCurveCheck"><img src="Assets/BadCurve.png"></label>
                 </div>
             </details>
+            <details class="detailsInner">
+                <summary>What does "From file" button do?</summary>
+                <div class="multiline">If you already have saved TCAL data from before or want to use the plotting feature of this tool without having a browser supporting Web Serial API, you can upload a file with the TCAL commands output.
+It expects a text file with the TCAL command and its output included and consequtive. For example:
+tcal print
+[INFO ] [BMI160Sensor:0] Sensor 0 temperature calibration state:
+[INFO ] [BMI160Sensor:0]   current temp: 31.3224 C (88.3803 F)
+[INFO ] [BMI160Sensor:0]   total range: min 15.0000 C max 45.0000 C (min 59.0000 F max 113.0000 F)
+[INFO ] [BMI160Sensor:0]   calibrated range: min 14.9679 C max 32.3263 C (min 58.9423 F max 90.1874 F)
+[INFO ] [BMI160Sensor:0]   done: 58.3
+...
+tcal debug
+[INFO ] [BMI160Sensor:0] Sensor 0 gyro odr 400.000000 hz, sensitivity 32.799999 lsb
+[INFO ] [BMI160Sensor:0] Sensor 0 temperature calibration matrix (tempC x y z):
+[INFO ] [BMI160Sensor:0] BUF 0 60
+[INFO ] [BMI160Sensor:0] SENS 0 32.799999
+[INFO ] [BMI160Sensor:0] DATA 0
+[INFO ] [BMI160Sensor:0] 14.825710 -4.308642 -3.987654 -2.938272
+[INFO ] [BMI160Sensor:0] 15.332200 -4.740741 -3.629630 -3.222222
+[INFO ] [BMI160Sensor:0] 15.832540 -5.271605 -3.876543 -2.382716
+...etc...
+
+It's pretty robust in filtering the data it actually needs, so you can leave the boot sequence and periodic notifications in.
+                </div>
+            </details>
         </details>
         <p>
         Get TCAL Data from Serial:
         <button id="buttonSelectCOM">Select COM Port</button>
         <p>
-        <span>Test from file:</span>
+        <span>From file:</span>
         <input type="file" id="test-file-selector">
         <div id="loadingBar"></div>
         <div id="loadingStatus"></div>
