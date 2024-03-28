@@ -31,10 +31,8 @@ function calDataFromDebugText (textArray, TCALData) {
         {
             break;
         }
-        console.log(textArray[i]);
         if (textArray[i].search(/(Temperature calibration not supported for )/g) != -1)
         {
-            console.log("not supported");
             currentTCALSupported = false;
             currentIMUIndex = Number(/\[.+\] \[\S+:(\d+)]/g.exec(textArray[i])[1]);
             currentIMUType = /\[.+\] \[(\S+):/g.exec(textArray[i])[1];
@@ -54,7 +52,6 @@ function calDataFromDebugText (textArray, TCALData) {
             }
             continue;
         }
-        console.log("next")
         switch(flagDATA)
         {
             //first entry setup
