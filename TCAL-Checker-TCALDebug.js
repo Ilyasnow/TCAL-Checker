@@ -31,10 +31,30 @@ function calDataFromDebugText (textArray, TCALData) {
         {
             break;
         }
+        console.log(textArray[i]);
         if (textArray[i].search(/(Temperature calibration not supported for )/g) != -1)
         {
+            console.log("not supported");
             currentTCALSupported = false;
+            currentIMUIndex = Number(/\[.+\] \[\S+:(\d+)]/g.exec(textArray[i])[1]);
+            currentIMUType = /\[.+\] \[(\S+):/g.exec(textArray[i])[1];
+            if(TCALData[currentIMUIndex] === undefined)
+            {
+                TCALData.push({
+                    IMUIndex:currentIMUIndex,
+                    IMUType:currentIMUType,
+                    TCALDataPoints:currentTCALDataPoints,
+                    TCALPolynomials:currentTCALPolynomials,
+                });
+            }
+            else
+            {
+                TCALData[currentIMUIndex].TCALDataPoints = currentTCALDataPoints;
+                TCALData[currentIMUIndex].TCALPolynomials = currentTCALPolynomials;
+            }
+            continue;
         }
+        console.log("next")
         switch(flagDATA)
         {
             //first entry setup
