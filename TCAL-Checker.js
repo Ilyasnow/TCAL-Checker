@@ -114,8 +114,8 @@ async function readSerialArray(port) {
     var firstLine = true;
     while(true) {
         //wait indefinitely for the first line of data, otherwise setTimeout ms
-        console.log(firstLine);
         if(firstLine) {
+            console.log("waiting for any data");
             var { value, done } = await reader.read();
         } else {
             const timeoutPromise = new Promise(((r, value, done) => setTimeout(r, 300, '', true)));
