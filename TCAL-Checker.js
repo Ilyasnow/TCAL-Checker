@@ -85,6 +85,11 @@ async function SelectCOMPort() {
 
     ErrorWindow.HideLoading();
     document.getElementById("loadingBar").style.display = "none";
+    
+    //Clear previous output
+    document.getElementById("dataTable").innerHTML = "";
+    ErrorWindow.ClearErrors();
+    document.getElementById("rawData").innerHTML = "";
 
     PrintDataWorker(printTextArray, TCALData)
     DebugDataWorker(debugTextArray, TCALData)
@@ -205,6 +210,11 @@ function ParseInputFile (textArray) {
 
     console.log(textArrayPrint);
     console.log(textArrayDebug);
+
+    //Clear previous output
+    document.getElementById("dataTable").innerHTML = "";
+    ErrorWindow.ClearErrors();
+    document.getElementById("rawData").innerHTML = "";
 
     if(textArrayPrint)
         PrintDataWorker(textArrayPrint, TCALData);

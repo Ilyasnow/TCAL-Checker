@@ -31,32 +31,17 @@ function calDataFromDebugText (textArray, TCALData) {
         {
             break;
         }
-        if (textArray[i].search(/(Temperature calibration not supported for )/g) != -1)
-        {
-            currentTCALSupported = false;
-            currentIMUIndex = Number(/\[.+\] \[\S+:(\d+)]/g.exec(textArray[i])[1]);
-            currentIMUType = /\[.+\] \[(\S+):/g.exec(textArray[i])[1];
-            if(TCALData[currentIMUIndex] === undefined)
-            {
-                TCALData.push({
-                    IMUIndex:currentIMUIndex,
-                    IMUType:currentIMUType,
-                    TCALDataPoints:currentTCALDataPoints,
-                    TCALPolynomials:currentTCALPolynomials,
-                });
-            }
-            else
-            {
-                TCALData[currentIMUIndex].TCALDataPoints = currentTCALDataPoints;
-                TCALData[currentIMUIndex].TCALPolynomials = currentTCALPolynomials;
-            }
-            continue;
-        }
         switch(flagDATA)
         {
             //first entry setup
             case 0:
                 flagDATA = 1;
+                //If TCAL is not supported skip the data collection
+                if (textArray[i].search(/(Temperature calibration not supported for )/g) != -1)
+                {
+                    flagDATA = 3;
+                    currentTCALSupported = false;
+                } else currentTCALSupported = true;
                 currentIMUIndex = Number(/\[.+\] \[\S+:(\d+)]/g.exec(textArray[i])[1]);
                 currentIMUType = /\[.+\] \[(\S+):/g.exec(textArray[i])[1];
                 currentTCALDataPoints = [];
@@ -94,17 +79,20 @@ function calDataFromDebugText (textArray, TCALData) {
                             IMUType:currentIMUType,
                             TCALDataPoints:currentTCALDataPoints,
                             TCALPolynomials:currentTCALPolynomials,
+                            TCALSupported:currentTCALSupported,
                         });
                     }
                     else
                     {
                         TCALData[currentIMUIndex].TCALDataPoints = currentTCALDataPoints;
                         TCALData[currentIMUIndex].TCALPolynomials = currentTCALPolynomials;
+                        TCALData[currentIMUIndex].TCALSupported = currentTCALSupported;
                     }
                     currentIMUIndex = undefined;
                     currentIMUType = undefined;
                     currentTCALDataPoints = undefined;
                     currentTCALPolynomials = undefined;
+                    currentTCALSupported = undefined;
                     break;
                 }
                 var polyC = Number(/(-?\d+\.\d+) /g.exec(textArray[i])[1]);
@@ -115,7 +103,7 @@ function calDataFromDebugText (textArray, TCALData) {
                 break;
         }
     }
-    if(TCALData[currentIMUIndex] === undefined)
+    if(TCALData[currentIMUIndex] == undefined)
     {
         TCALData.push({
             IMUIndex:currentIMUIndex,
@@ -129,7 +117,7 @@ function calDataFromDebugText (textArray, TCALData) {
     {
         TCALData[currentIMUIndex].TCALDataPoints = currentTCALDataPoints;
         TCALData[currentIMUIndex].TCALPolynomials = currentTCALPolynomials;
-        TCALData[currentIMUIndex].tcalSupported = currentTCALSupported;
+        TCALData[currentIMUIndex].TCALSupported = currentTCALSupported;
     }
     console.log(TCALData);
     TCALDataGlobal = TCALData
@@ -151,6 +139,7 @@ function plotTCALData (TCALData) {
             document.getElementById("plotterRow"+currentIndex).remove();
         }
         if(currentIMU.TCALSupported == false) {
+            console.log("IMU "+currentIndex+" does not support TCAL");
             return 1;
         }
         if(currentIMU.TCALDataPoints == undefined || currentIMU.TCALDataPoints.length == 0 ) {
