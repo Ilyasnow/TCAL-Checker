@@ -46,6 +46,7 @@ function calDataFromDebugText (textArray, TCALData) {
                 currentIMUType = /\[.+\] \[(\S+):/g.exec(textArray[i])[1];
                 currentTCALDataPoints = [];
                 currentTCALPolynomials = [];
+                currentArrayIndex++;
                 break;
             //pre-data `tcal debug` information
             case 1:
@@ -68,11 +69,13 @@ function calDataFromDebugText (textArray, TCALData) {
                 break;
             //tcal v2 polynomials
             case 3:
-                //Go until IMU index changes
-                if (currentIMUIndex != Number(/\[.+\] \[\S+:(\d+)]/g.exec(textArray[i])[1])) {
+                //Go until IMU index or IMU type changes
+                if (currentIMUIndex != Number(/\[.+\] \[\S+:(\d+)]/g.exec(textArray[i])[1]) || 
+                    currentIMUType != /\[.+\] \[(\S+):/g.exec(textArray[i])[1])
+                {
                     flagDATA = 0;
                     i--; //recheck the current line
-                    if(TCALData[currentIMUIndex] === undefined)
+                    if(TCALData[currentArrayIndex] === undefined)
                     {
                         TCALData.push({
                             IMUIndex:currentIMUIndex,
@@ -84,9 +87,9 @@ function calDataFromDebugText (textArray, TCALData) {
                     }
                     else
                     {
-                        TCALData[currentIMUIndex].TCALDataPoints = currentTCALDataPoints;
-                        TCALData[currentIMUIndex].TCALPolynomials = currentTCALPolynomials;
-                        TCALData[currentIMUIndex].TCALSupported = currentTCALSupported;
+                        TCALData[currentArrayIndex].TCALDataPoints = currentTCALDataPoints;
+                        TCALData[currentArrayIndex].TCALPolynomials = currentTCALPolynomials;
+                        TCALData[currentArrayIndex].TCALSupported = currentTCALSupported;
                     }
                     currentIMUIndex = undefined;
                     currentIMUType = undefined;
@@ -95,6 +98,7 @@ function calDataFromDebugText (textArray, TCALData) {
                     currentTCALSupported = undefined;
                     break;
                 }
+                console.log(textArray[i]);
                 var polyC = Number(/(-?\d+\.\d+) /g.exec(textArray[i])[1]);
                 var polyX = Number(/(-?\d+\.\d+)x\)/g.exec(textArray[i])[1]);
                 var polyXX = Number(/(-?\d+\.\d+)xx\)/g.exec(textArray[i])[1]);
@@ -103,7 +107,7 @@ function calDataFromDebugText (textArray, TCALData) {
                 break;
         }
     }
-    if(TCALData[currentIMUIndex] == undefined)
+    if(TCALData[currentArrayIndex] == undefined)
     {
         TCALData.push({
             IMUIndex:currentIMUIndex,
@@ -115,9 +119,9 @@ function calDataFromDebugText (textArray, TCALData) {
     }
     else
     {
-        TCALData[currentIMUIndex].TCALDataPoints = currentTCALDataPoints;
-        TCALData[currentIMUIndex].TCALPolynomials = currentTCALPolynomials;
-        TCALData[currentIMUIndex].TCALSupported = currentTCALSupported;
+        TCALData[currentArrayIndex].TCALDataPoints = currentTCALDataPoints;
+        TCALData[currentArrayIndex].TCALPolynomials = currentTCALPolynomials;
+        TCALData[currentArrayIndex].TCALSupported = currentTCALSupported;
     }
     console.log(TCALData);
     TCALDataGlobal = TCALData

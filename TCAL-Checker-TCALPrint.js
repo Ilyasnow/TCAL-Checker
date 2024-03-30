@@ -28,7 +28,10 @@ function calDataFromPrintText(textArray, TCALData) {
     var currentArrayIndex = -1;
     for(var i=1; i < textArray.length;i++)
     {
-        if(textArray[i].search(/\[.+\] \[\S+:(\d+)]/g) != -1 && currentIMUIndex != Number(/\[.+\] \[\S+:(\d+)]/g.exec(textArray[i])[1]))
+        //If IMU index or IMU type changes push the collected data and start anew
+        if(textArray[i].search(/\[.+\] \[\S+:(\d+)]/g) != -1 && 
+            (currentIMUIndex != Number(/\[.+\] \[\S+:(\d+)]/g.exec(textArray[i])[1]) || 
+            currentIMUType != /\[.+\] \[(\S+):/g.exec(textArray[i])[1]))
         {
             currentArrayIndex++;
             if(currentIMUIndex!==undefined)
